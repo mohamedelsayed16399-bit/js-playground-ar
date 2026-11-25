@@ -1,0 +1,72 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0f172a"><title>ملعب الجافاسكربت</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{height:100%;margin:0}
+body{background:#0f172a;color:#e2e8f0;font-family:system-ui,'Segoe UI',Tahoma,sans-serif;display:flex;flex-direction:column;overflow:hidden}
+header{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#111c33;border-bottom:1px solid #1e293b}
+header h1{font-size:17px;margin:0;flex:1;color:#fbbf24}
+button{font:inherit;border:0;border-radius:10px;padding:9px 13px;background:#1e293b;color:#e2e8f0;cursor:pointer}
+button.run{background:#22c55e;color:#04210f;font-weight:700}button.act{background:#fbbf24;color:#1a1200}
+.tabs{display:flex;gap:6px;padding:8px 10px;overflow-x:auto;background:#0b1325;direction:ltr}
+.tab{white-space:nowrap;padding:7px 12px;border-radius:9px;background:#16233f;font-size:14px;display:flex;gap:8px;align-items:center}
+.tab.on{background:#334155;outline:1px solid #fbbf24}.tab b{opacity:.6;font-weight:400}
+#ed{flex:1.2;display:flex;min-height:0;direction:ltr;background:#0b1220}
+#ln{width:38px;padding:10px 6px;text-align:right;color:#475569;font:13px/20px ui-monospace,Menlo,Consolas,monospace;overflow:hidden;white-space:pre;user-select:none;background:#0d1628}
+#code{flex:1;resize:none;border:0;outline:0;background:transparent;color:#e2e8f0;font:13px/20px ui-monospace,Menlo,Consolas,monospace;padding:10px;tab-size:2;white-space:pre;overflow:auto}
+.bar{display:flex;gap:6px;padding:6px 10px;background:#111c33;align-items:center;font-size:13px}.bar span{flex:1;color:#94a3b8}
+#out{flex:1;overflow:auto;padding:8px 12px;background:#050b18;direction:ltr;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace}
+.l{white-space:pre-wrap;word-break:break-word;border-bottom:1px solid #0f1b33;padding:2px 0}.l.err{color:#f87171}.l.warn{color:#fbbf24}.l.res{color:#60a5fa}.l.info{color:#38bdf8}
+#sn{position:fixed;inset:0;background:#000a;display:none;align-items:flex-end;z-index:9}#sn>div{width:100%;max-height:75%;overflow:auto;background:#111c33;border-radius:18px 18px 0 0;padding:14px}
+#sn h3{margin:0 0 10px;color:#fbbf24}.it{padding:12px;border-radius:12px;background:#1e293b;margin-bottom:8px}.it small{display:block;color:#94a3b8;margin-top:3px}
+.keys{display:flex;gap:5px;padding:5px 8px;background:#0b1325;direction:ltr;overflow-x:auto}.keys button{padding:7px 11px;font:15px ui-monospace,monospace}
+</style></head><body>
+<header><h1>🧪 ملعب الجافاسكربت</h1><button id="bSn">أمثلة</button><button id="bSh">مشاركة</button><button class="run" id="bRun">▶ شغّل</button></header>
+<div class="tabs" id="tabs"></div>
+<div id="ed"><div id="ln">1</div><textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea></div>
+<div class="keys" id="keys"></div>
+<div class="bar"><span id="st">جاهز</span><button id="bClr">مسح</button><button id="bFmt">ترتيب</button></div>
+<div id="out"></div>
+<div id="sn"><div><h3>أمثلة جاهزة</h3><div id="snl"></div><button id="bCl" style="width:100%">إغلاق</button></div></div>
+<script>
+const $=id=>document.getElementById(id);
+const SN=[
+['مربعات الأرقام','map / filter / reduce','const a=[1,2,3,4,5,6];\nconsole.log(a.map(x=>x*x));\nconsole.log(a.filter(x=>x%2==0));\nconsole.log("المجموع:",a.reduce((s,x)=>s+x,0));'],
+['فيبوناتشي','تكرار ودالة','function fib(n){return n<2?n:fib(n-1)+fib(n-2)}\nfor(let i=0;i<12;i++)console.log(i,fib(i));\nconsole.time("t");fib(25);console.timeEnd("t");'],
+['Promise و async','انتظار غير متزامن','const wait=ms=>new Promise(r=>setTimeout(r,ms));\nasync function main(){\n  console.log("بدأ");\n  await wait(500);\n  console.log("بعد نص ثانية");\n  const r=await Promise.all([wait(100).then(()=>"أ"),wait(200).then(()=>"ب")]);\n  console.log(r);\n}\nmain();'],
+['كائنات وكلاسات','class + getters','class Hero{\n  #hp=100;\n  constructor(n){this.name=n}\n  hit(d){this.#hp=Math.max(0,this.#hp-d);return this}\n  get hp(){return this.#hp}\n}\nconst h=new Hero("سيف").hit(30).hit(25);\nconsole.log(h,h.hp);\nconsole.table([{a:1,b:2},{a:3,b:4}]);'],
+['fetch من الإنترنت','طلب API مجاني','fetch("https://api.github.com/zen").then(r=>r.text()).then(t=>console.log("GitHub says:",t)).catch(e=>console.error(e.message));'],
+['ترتيب وبحث','sort و find','const p=[{n:"علي",a:30},{n:"سارة",a:25},{n:"أحمد",a:35}];\nconsole.log(p.sort((x,y)=>x.a-y.a).map(x=>x.n));\nconsole.log(p.find(x=>x.a>30));\nconsole.log(Object.groupBy?Object.groupBy(p,x=>x.a>28?"كبير":"صغير"):"no groupBy");'],
+['Canvas رسم','ارسم على صفحة','document.body.style.margin=0;\nconst c=document.createElement("canvas");c.width=300;c.height=150;document.body.append(c);\nconst x=c.getContext("2d");\nfor(let i=0;i<40;i++){x.fillStyle=`hsl(${i*9},80%,55%)`;x.beginPath();x.arc(150+Math.cos(i/3)*i*3,75+Math.sin(i/3)*i*1.6,6,0,7);x.fill()}\nconsole.log("تم الرسم");'],
+['Regex و نصوص','تعبيرات نمطية','const s="اتصل على 0100-123-4567 أو 0111-765-4321";\nconsole.log(s.match(/\\d{4}-\\d{3}-\\d{4}/g));\nconsole.log("hello world".replace(/\\b\\w/g,c=>c.toUpperCase()));'],
+];
+const KEYS=['{','}','(',')','[',']',';','=>','"',"'",'`','.','=','Tab'];
+let S;try{S=JSON.parse(localStorage.jsp)}catch(e){}
+if(!S||!S.tabs||!S.tabs.length)S={cur:0,tabs:[{n:'مرحبا',c:SN[0][2]}]};
+const h=location.hash.slice(1);if(h){try{const c=decodeURIComponent(escape(atob(h)));S.tabs.push({n:'مشارك',c});S.cur=S.tabs.length-1;history.replaceState(null,'',location.pathname)}catch(e){}}
+const sv=()=>localStorage.jsp=JSON.stringify(S);
+function tabs(){$('tabs').innerHTML='';S.tabs.forEach((t,i)=>{const d=document.createElement('div');d.className='tab'+(i==S.cur?' on':'');d.textContent=t.n;d.onclick=()=>{S.tabs[S.cur].c=$('code').value;S.cur=i;load()};d.ondblclick=()=>{const n=prompt('اسم التبويب',t.n);if(n){t.n=n;sv();tabs()}};if(S.tabs.length>1){const x=document.createElement('b');x.textContent='✕';x.onclick=e=>{e.stopPropagation();if(confirm('حذف التبويب؟')){S.tabs.splice(i,1);S.cur=Math.min(S.cur,S.tabs.length-1);load()}};d.append(x)}$('tabs').append(d)});const a=document.createElement('div');a.className='tab';a.textContent='＋';a.onclick=()=>{S.tabs[S.cur].c=$('code').value;S.tabs.push({n:'ملف '+(S.tabs.length+1),c:''});S.cur=S.tabs.length-1;load()};$('tabs').append(a)}
+function load(){$('code').value=S.tabs[S.cur].c;lines();tabs();sv()}
+function lines(){const n=$('code').value.split('\n').length;let s='';for(let i=1;i<=n;i++)s+=i+'\n';$('ln').textContent=s;$('ln').scrollTop=$('code').scrollTop}
+$('code').addEventListener('input',()=>{S.tabs[S.cur].c=$('code').value;lines();sv()});
+$('code').addEventListener('scroll',()=>$('ln').scrollTop=$('code').scrollTop);
+$('code').addEventListener('keydown',e=>{if(e.key=='Tab'){e.preventDefault();ins('  ')}if((e.ctrlKey||e.metaKey)&&e.key=='Enter'){e.preventDefault();run()}});
+function ins(t){const c=$('code'),a=c.selectionStart,b=c.selectionEnd;c.setRangeText(t,a,b,'end');c.dispatchEvent(new Event('input'));c.focus()}
+KEYS.forEach(k=>{const b=document.createElement('button');b.textContent=k;b.onmousedown=e=>e.preventDefault();b.onclick=()=>{if(k=='Tab')ins('  ');else if('{(["\'`'.includes(k)&&k.length==1){const m={'{':'}','(':')','[':']','"':'"',"'":"'",'`':'`'}[k];ins(k+m);const c=$('code');c.selectionStart=c.selectionEnd=c.selectionStart-1}else ins(k)};$('keys').append(b)});
+function log(t,cls=''){const d=document.createElement('div');d.className='l '+cls;d.textContent=t;$('out').append(d);$('out').scrollTop=1e9}
+let fr=null,tm=0;
+function run(){S.tabs[S.cur].c=$('code').value;sv();$('out').innerHTML='';if(fr)fr.remove();
+ fr=document.createElement('iframe');fr.setAttribute('sandbox','allow-scripts');fr.style.cssText='position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0.01';
+ const code=$('code').value.replace(/<\/script/gi,'<\\/script');
+ const pre=`<script>const __p=(t,a)=>parent.postMessage({t,a},'*');const __f=v=>{try{if(typeof v=='string')return v;if(v instanceof Error)return v.stack||String(v);if(typeof v=='function')return String(v);const R=(k,x)=>typeof x=='bigint'?x+'n':x instanceof Map?{Map:[...x]}:x instanceof Set?{Set:[...x]}:x;const c=JSON.stringify(v,R);if(c===undefined)return String(v);return c.length<=72?c:JSON.stringify(v,R,2)}catch(e){return String(v)}};const __T={};const __O=__OFF;
+for(const k of['log','info','warn','error'])console[k]=(...a)=>__p(k,a.map(__f).join(' '));
+console.table=d=>__p('log',__f(d));console.time=l=>__T[l||'d']=performance.now();console.timeEnd=l=>__p('info',(l||'d')+': '+(performance.now()-__T[l||'d']).toFixed(2)+'ms');
+addEventListener('error',e=>__p('error',e.message+(e.lineno>__O?' (سطر '+(e.lineno-__O)+')':'')));addEventListener('unhandledrejection',e=>__p('error','Promise: '+__f(e.reason)));<\/script>`;
+ const head='<!doctype html><html><body>'+pre.replace('__OFF','0');const off=head.split('\n').length+1;fr.srcdoc=head.replace('const __O=0;','const __O='+off+';')+'<script>try{\n'+code+'\n}catch(e){__p("error",e.message)}<\/script></body></html>';
+ const t0=performance.now();$('st').textContent='شغّال…';document.body.append(fr);clearTimeout(tm);tm=setTimeout(()=>{$('st').textContent='انتهى ('+Math.round(performance.now()-t0)+'ms)'},400)}
+addEventListener('message',e=>{if(fr&&e.source===fr.contentWindow&&e.data&&e.data.t){log(e.data.a,e.data.t=='error'?'err':e.data.t=='warn'?'warn':e.data.t=='info'?'info':'')}});
+$('bRun').onclick=run;$('bClr').onclick=()=>{$('out').innerHTML='';$('st').textContent='جاهز'};
+$('bFmt').onclick=()=>{let ind=0;const o=$('code').value.split('\n').map(l=>l.trim()).map(l=>{if(/^[}\])]/.test(l))ind=Math.max(0,ind-1);const r='  '.repeat(ind)+l;const op=(l.match(/[{(\[]/g)||[]).length,cl=(l.match(/[})\]]/g)||[]).length;ind=Math.max(0,ind+op-cl+(/^[}\])]/.test(l)?1:0));return r});$('code').value=o.join('\n');$('code').dispatchEvent(new Event('input'))};
+$('bSh').onclick=async()=>{const u=location.origin+location.pathname+'#'+btoa(unescape(encodeURIComponent($('code').value)));try{await navigator.clipboard.writeText(u);$('st').textContent='تم نسخ رابط المشاركة'}catch(e){prompt('انسخ الرابط',u)}};
+SN.forEach(s=>{const d=document.createElement('div');d.className='it';d.innerHTML='<b></b><small></small>';d.firstChild.textContent=s[0];d.lastChild.textContent=s[1];d.onclick=()=>{S.tabs[S.cur].c=$('code').value;S.tabs.push({n:s[0],c:s[2]});S.cur=S.tabs.length-1;load();$('sn').style.display='none'};$('snl').append(d)});
+$('bSn').onclick=()=>$('sn').style.display='flex';$('bCl').onclick=()=>$('sn').style.display='none';
+load();window.T={run,S:()=>S};
+</script></body></html>
